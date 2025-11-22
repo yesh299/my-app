@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 //components:
-import HeaderComponent from "./Component/HeaderComponent";
+import Headrecomponent from "./Component/HeaderComponent";
 import FooterComponent from "./Component/FooterComponent";
 
 //user components:
@@ -36,7 +36,7 @@ import AdminAnalyticsPage from "./Pages/admin/AdminAnalyticsPage";
 function App() {
   return (
     <BrowserRouter>
-      <HeaderComponent />
+      <Headrecomponent />
       <Routes>
         <Route element={<RouteWithUserChatComponent />}>
           {/*publicly available routes:*/}

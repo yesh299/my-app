@@ -1,5 +1,12 @@
+import ProductCarouselComponent from "../Component/ProductCarouselComponent";
+import CategoryCardComponent from "../Component/CategoryCardComponent";
 const Homepage = () => {
-  return <p>This is a Homepage</p>;
+  return (
+    <>
+    <ProductCarouselComponent />
+    <CategoryCardComponent />
+    </>
+  )
 };
 
 export default Homepage;

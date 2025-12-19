@@ -1,10 +1,13 @@
 /* Footer Styles */
 footer {
   margin-top: auto;
+  background: #172337;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 footer h4, footer h5, footer h6 {
-  color: #ffc107;
+  color: #fff;
+  font-weight: 700;
 }
 
 footer p, footer a {
@@ -12,8 +15,12 @@ footer p, footer a {
 }
 
 footer a:hover {
-  color: #ffc107;
+  color: #ffe500;
   text-decoration: none;
+}
+
+footer .footer-divider {
+  border-top: 1px solid rgba(255,255,255,0.12);
 }
 
 /* Mobile Responsive Footer */

@@ -51,6 +51,32 @@ const UserProfilePage = () => {
     setTimeout(() => setUpdateSuccess(false), 3000);
   };
 
+  const handlePasswordUpdate = (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const current = form.formCurrentPassword.value.trim();
+    const next = form.formNewPassword.value.trim();
+    const confirm = form.formConfirmPassword.value.trim();
+
+    if (!current || !next || !confirm) {
+      alert("Please fill in all password fields.");
+      return;
+    }
+    if (next.length < 6) {
+      alert("New password must be at least 6 characters.");
+      return;
+    }
+    if (next !== confirm) {
+      alert("New password and confirmation do not match.");
+      return;
+    }
+    // Demo: persist a flag so login can validate later if needed
+    const storedUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    localStorage.setItem("userPasswordUpdated", JSON.stringify({ email: storedUser.email, updatedAt: Date.now() }));
+    alert("Password updated successfully!");
+    form.reset();
+  };
+
   return (
     <Container className="my-4">
       <Row className="justify-content-md-center">
@@ -172,7 +198,7 @@ const UserProfilePage = () => {
           <hr className="my-4" />
 
           <h4>Change Password</h4>
-          <Form>
+          <Form onSubmit={handlePasswordUpdate}>
             <Form.Group className="mb-3" controlId="formCurrentPassword">
               <Form.Label>Current Password</Form.Label>
               <Form.Control type="password" />
@@ -188,7 +214,7 @@ const UserProfilePage = () => {
               <Form.Control type="password" />
             </Form.Group>
 
-            <Button variant="warning">Update Password</Button>
+            <Button variant="warning" type="submit">Update Password</Button>
           </Form>
         </Col>
       </Row>

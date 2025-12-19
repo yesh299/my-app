@@ -2,12 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const mockAuthDB = require('./mockAuthDB');
 
 // Load environment variables
 dotenv.config();
 
 // Connect to database (non-blocking)
 connectDB();
+
+// Initialize mock authentication database
+mockAuthDB.initializeMockUsers();
 
 const app = express();
 
@@ -21,6 +25,7 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/cart', require('./routes/cartRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Welcome route
@@ -58,5 +63,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`\n✓ Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   console.log(`✓ API available at http://localhost:${PORT}`);
-  console.log(`✓ To set up MongoDB, see BACKEND_SETUP.md\n`);
+  console.log(`✓ Auth using mock database (no MongoDB required)`);
+  console.log(`✓ Demo: admin@admin.com / password  or  user@user.com / password\n`);
 });

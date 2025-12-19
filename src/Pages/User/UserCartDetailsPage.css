@@ -1,0 +1,15 @@
+/* Basic checkout page tweaks */
+.payment-options .form-check {
+  padding: 0.4rem 0;
+}
+
+.payment-options .form-check label {
+  cursor: pointer;
+}
+
+/* Keep order summary visible on large screens */
+@media (min-width: 992px) {
+  .sticky-top {
+    z-index: 100;
+  }
+}

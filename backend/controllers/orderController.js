@@ -26,6 +26,9 @@ exports.createOrder = async (req, res) => {
     // Generate unique order ID
     const orderId = 'ORD-' + Date.now() + Math.floor(Math.random() * 1000);
 
+    // For COD, mark as not paid. For online payment, wait for payment verification
+    const isPaid = paymentMethod === 'Cash on Delivery' ? false : false;
+
     const order = await Order.create({
       user: req.user._id,
       orderId,
@@ -36,6 +39,8 @@ exports.createOrder = async (req, res) => {
       taxPrice,
       shippingPrice,
       total,
+      isPaid,
+      status: 'Processing',
     });
 
     // Update product sales and stock

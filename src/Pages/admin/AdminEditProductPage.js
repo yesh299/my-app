@@ -1,9 +1,8 @@
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const AdminEditProductPage = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);

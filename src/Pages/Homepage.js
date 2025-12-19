@@ -16,7 +16,7 @@ const Homepage = () => {
     {
       title: "MacBook Pro 16 M2",
       description: "Ultimate power for creators with stunning Retina display.",
-      price: 2499,
+      price: 150000,
       tag: "Bestseller",
       image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80",
       link: "/product-details/1",

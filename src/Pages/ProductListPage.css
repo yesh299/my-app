@@ -1,49 +1,68 @@
 .product-list-page {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #f1f3f6;
   min-height: 100vh;
   padding: 2rem 0;
 }
 
 /* Sidebar Filter */
 .filter-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  padding: 0.6rem;
+  font-size: 0.85rem;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.filter-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .filter-title {
-  font-size: 1.3rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  color: #333;
-  border-bottom: 3px solid #ffc107;
-  padding-bottom: 0.8rem;
-  margin-bottom: 1.5rem;
+  color: #111827;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .filter-title i {
-  margin-right: 0.5rem;
+  font-size: 0.85rem;
+  color: #2563eb;
 }
 
 .filter-list {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   overflow: hidden;
+  background: #ffffff;
 }
 
 .filter-header {
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
   font-weight: 600;
-  color: #333;
+  color: #374151;
   border: none !important;
-  padding: 1rem !important;
+  padding: 0.45rem 0.6rem !important;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .filter-item {
   border: none !important;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 0.8rem 1rem !important;
-  transition: all 0.3s ease;
-  color: #555;
+  border-bottom: 1px solid #f3f4f6;
+  padding: 0.4rem 0.6rem !important;
+  transition: all 0.2s ease;
+  color: #4b5563;
+  font-size: 0.82rem;
+  cursor: pointer;
 }
 
 .filter-item:last-child {
@@ -51,28 +70,107 @@
 }
 
 .filter-item:hover {
-  background-color: #fff9e6;
-  padding-left: 1.2rem !important;
-  color: #ffc107;
+  background: linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%);
+  padding-left: 0.8rem !important;
+  color: #2563eb;
+  transform: translateX(2px);
 }
 
 .filter-item.active {
-  background-color: #ffc107;
-  color: #333;
+  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+  color: #fff;
   font-weight: 600;
-  border-left: 4px solid #ffb300;
-  padding-left: calc(1rem - 4px) !important;
+  border-left: 3px solid #1e40af;
+  padding-left: calc(0.6rem - 3px) !important;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 }
 
 .clear-filters-btn {
   font-weight: 600;
   transition: all 0.3s ease;
   border-width: 2px;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.8rem;
 }
 
 .clear-filters-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.25);
+}
+
+.filter-accordion .accordion-item {
+  border: none;
+  margin-bottom: 0.5rem;
+  background: transparent;
+}
+
+.filter-accordion .accordion-button {
+  font-weight: 600;
+  border-radius: 6px !important;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.82rem;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.filter-accordion .accordion-button:not(.collapsed) {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #2563eb;
+  border-color: #bfdbfe;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.1);
+}
+
+.filter-accordion .accordion-button:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: #93c5fd;
+}
+
+.filter-accordion .accordion-body {
+  padding: 0.4rem 0.4rem 0.2rem 0.4rem;
+  background: #ffffff;
+}
+
+.applied-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.applied-chips-inline {
+  margin-top: 0.25rem;
+}
+
+.filter-chip {
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+.chip-close {
+  color: #555;
+  padding: 0 !important;
+  line-height: 1;
+}
+
+.chip-close i {
+  font-size: 0.9rem;
+}
+
+.price-custom .form-control {
+  border: 1px solid #e0e0e0;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.filter-apply-btn {
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
 }
 
 /* Products Header */
@@ -81,7 +179,7 @@
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-bottom: 3px solid #ffc107;
+  border-bottom: 3px solid #2874f0;
 }
 
 .page-title {
@@ -93,12 +191,12 @@
 
 .category-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
-  color: #333;
+  background: linear-gradient(135deg, #2874f0 0%, #1e5fc1 100%);
+  color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 25px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+  box-shadow: 0 4px 12px rgba(40, 116, 240, 0.25);
 }
 
 .product-count {
@@ -108,7 +206,7 @@
 
 .product-count i {
   margin-right: 0.5rem;
-  color: #ffc107;
+  color: #2874f0;
 }
 
 .sort-label {
@@ -204,8 +302,29 @@
 @media (min-width: 992px) {
   .sticky-top {
     position: sticky;
-    top: 20px;
-    z-index: 10;
+    top: 80px;
+    z-index: 100;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+  
+  /* Custom scrollbar for filter sidebar */
+  .sticky-top::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .sticky-top::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .sticky-top::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+  
+  .sticky-top::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
   }
 }
 
@@ -225,7 +344,12 @@
   }
 
   .filter-card {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+  }
+  
+  .filter-title {
+    font-size: 0.85rem;
   }
 
   .products-grid {
@@ -244,5 +368,19 @@
 
   .sort-select {
     font-size: 0.9rem;
+  }
+  
+  .filter-card {
+    padding: 0.4rem;
+  }
+  
+  .filter-title {
+    font-size: 0.8rem;
+    padding-bottom: 0.25rem;
+  }
+  
+  .filter-item {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.5rem !important;
   }
 }

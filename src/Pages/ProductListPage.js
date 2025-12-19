@@ -1,4 +1,4 @@
-import { Container, Row, Col, ListGroup, Button, Form, Alert, Spinner, Card } from "react-bootstrap";
+import { Container, Row, Col, ListGroup, Button, Form, Alert, Spinner, Card, Accordion, Badge } from "react-bootstrap";
 import ProductCardComponent from "../Component/ProductCardComponent";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -15,6 +15,8 @@ const ProductListPage = () => {
   const [error, setError] = useState("");
   const [sortOption, setSortOption] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
+  const [priceMin, setPriceMin] = useState("");
+  const [priceMax, setPriceMax] = useState("");
   const [ratingFilter, setRatingFilter] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(category || "");
 
@@ -71,6 +73,19 @@ const ProductListPage = () => {
 
   const categories = ["Electronics", "Books", "Fashion", "Home & Kitchen", "Sports", "Toys"];
 
+  const appliedChips = [
+    selectedCategory && { label: selectedCategory, type: "category" },
+    priceFilter && { label: `₹${priceFilter.replace("-", " - ₹")}`, type: "price" },
+    ratingFilter && { label: `${ratingFilter} ★ & Up`, type: "rating" },
+  ].filter(Boolean);
+
+  const applyCustomPrice = () => {
+    const min = Number(priceMin) || 0;
+    const max = Number(priceMax) || 0;
+    const range = max && max > min ? `${min}-${max}` : `${min}-999999`;
+    setPriceFilter(range);
+  };
+
   return (
     <Container fluid className="product-list-page">
       <Row>
@@ -78,109 +93,152 @@ const ProductListPage = () => {
         <Col lg={3} className="mb-4">
           <Card className="filter-card shadow-sm sticky-top" style={{ top: "20px" }}>
             <Card.Body>
-              <h5 className="filter-title mb-4">
-                <i className="bi bi-funnel"></i> Filter Products
+              <h5 className="filter-title mb-3 d-flex align-items-center justify-content-between">
+                <span><i className="bi bi-funnel"></i> Filter Products</span>
+                {appliedChips.length > 0 && (
+                  <Button
+                    size="sm"
+                    variant="outline-danger"
+                    className="clear-all-btn"
+                    onClick={() => {
+                      setSelectedCategory("");
+                      setPriceFilter("");
+                      setRatingFilter("");
+                      setSortOption("");
+                      setPriceMin("");
+                      setPriceMax("");
+                    }}
+                  >
+                    Clear All
+                  </Button>
+                )}
               </h5>
-              
-              <ListGroup className="filter-list mb-4">
-                <ListGroup.Item className="filter-header">
-                  <strong>📁 Category</strong>
-                </ListGroup.Item>
-                <ListGroup.Item 
-                  action 
-                  className={`filter-item ${selectedCategory === "" ? "active" : ""}`}
-                  onClick={() => setSelectedCategory("")}
-                >
-                  All Categories
-                </ListGroup.Item>
-                {categories.map((cat, idx) => (
-                  <ListGroup.Item
-                    key={idx}
-                    action
-                    className={`filter-item ${selectedCategory === cat ? "active" : ""}`}
-                    onClick={() => setSelectedCategory(cat)}
-                  >
-                    {cat}
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
 
-              <ListGroup className="filter-list mb-4">
-                <ListGroup.Item className="filter-header">
-                  <strong>💰 Price Range</strong>
-                </ListGroup.Item>
-                <ListGroup.Item 
-                  action 
-                  className={`filter-item ${priceFilter === "" ? "active" : ""}`}
-                  onClick={() => setPriceFilter("")}
-                >
-                  All Prices
-                </ListGroup.Item>
-                <ListGroup.Item 
-                  action 
-                  className={`filter-item ${priceFilter === "0-50" ? "active" : ""}`}
-                  onClick={() => setPriceFilter("0-50")}
-                >
-                  ₹0 - ₹50
-                </ListGroup.Item>
-                <ListGroup.Item 
-                  action 
-                  className={`filter-item ${priceFilter === "50-100" ? "active" : ""}`}
-                  onClick={() => setPriceFilter("50-100")}
-                >
-                  ₹50 - ₹100
-                </ListGroup.Item>
-                <ListGroup.Item 
-                  action 
-                  className={`filter-item ${priceFilter === "100-500" ? "active" : ""}`}
-                  onClick={() => setPriceFilter("100-500")}
-                >
-                  ₹100 - ₹500
-                </ListGroup.Item>
-                <ListGroup.Item 
-                  action 
-                  className={`filter-item ${priceFilter === "500-99999" ? "active" : ""}`}
-                  onClick={() => setPriceFilter("500-99999")}
-                >
-                  ₹500+
-                </ListGroup.Item>
-              </ListGroup>
+              {appliedChips.length > 0 && (
+                <div className="applied-chips mb-3">
+                  {appliedChips.map((chip, idx) => (
+                    <Badge bg="light" text="dark" key={idx} className="filter-chip">
+                      {chip.label}
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="chip-close"
+                        onClick={() => {
+                          if (chip.type === "category") setSelectedCategory("");
+                          if (chip.type === "price") setPriceFilter("");
+                          if (chip.type === "rating") setRatingFilter("");
+                        }}
+                      >
+                        <i className="bi bi-x-circle"></i>
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
 
-              <ListGroup className="filter-list mb-4">
-                <ListGroup.Item className="filter-header">
-                  <strong>⭐ Rating</strong>
-                </ListGroup.Item>
-                <ListGroup.Item 
-                  action 
-                  className={`filter-item ${ratingFilter === "" ? "active" : ""}`}
-                  onClick={() => setRatingFilter("")}
-                >
-                  All Ratings
-                </ListGroup.Item>
-                {[4.5, 4.0, 3.5, 3.0].map((rating) => (
-                  <ListGroup.Item
-                    key={rating}
-                    action
-                    className={`filter-item ${ratingFilter === rating.toString() ? "active" : ""}`}
-                    onClick={() => setRatingFilter(rating.toString())}
-                  >
-                    {rating} ★ & Up
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
+              <Accordion defaultActiveKey={["0", "1", "2"]} alwaysOpen className="filter-accordion">
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>📁 Category</Accordion.Header>
+                  <Accordion.Body>
+                    <ListGroup className="filter-list">
+                      <ListGroup.Item 
+                        action 
+                        className={`filter-item ${selectedCategory === "" ? "active" : ""}`}
+                        onClick={() => setSelectedCategory("")}
+                      >
+                        All Categories
+                      </ListGroup.Item>
+                      {categories.map((cat, idx) => (
+                        <ListGroup.Item
+                          key={idx}
+                          action
+                          className={`filter-item ${selectedCategory === cat ? "active" : ""}`}
+                          onClick={() => setSelectedCategory(cat)}
+                        >
+                          {cat}
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </Accordion.Body>
+                </Accordion.Item>
 
-              <Button 
-                variant="outline-danger" 
-                className="w-100 clear-filters-btn"
-                onClick={() => {
-                  setSelectedCategory("");
-                  setPriceFilter("");
-                  setRatingFilter("");
-                  setSortOption("");
-                }}
-              >
-                <i className="bi bi-arrow-counterclockwise"></i> Clear Filters
-              </Button>
+                <Accordion.Item eventKey="1">
+                  <Accordion.Header>💰 Price</Accordion.Header>
+                  <Accordion.Body>
+                    <ListGroup className="filter-list mb-3">
+                      <ListGroup.Item 
+                        action 
+                        className={`filter-item ${priceFilter === "" ? "active" : ""}`}
+                        onClick={() => setPriceFilter("")}
+                      >
+                        All Prices
+                      </ListGroup.Item>
+                      {[
+                        { label: "₹0 - ₹100", value: "0-100" },
+                        { label: "₹100 - ₹500", value: "100-500" },
+                        { label: "₹500 - ₹2000", value: "500-2000" },
+                        { label: "₹2000+", value: "2000-999999" },
+                      ].map((opt) => (
+                        <ListGroup.Item
+                          key={opt.value}
+                          action
+                          className={`filter-item ${priceFilter === opt.value ? "active" : ""}`}
+                          onClick={() => setPriceFilter(opt.value)}
+                        >
+                          {opt.label}
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                    <div className="price-custom">
+                      <div className="d-flex align-items-center gap-2 mb-2">
+                        <Form.Control
+                          type="number"
+                          placeholder="Min"
+                          value={priceMin}
+                          onChange={(e) => setPriceMin(e.target.value)}
+                        />
+                        <span className="text-muted">to</span>
+                        <Form.Control
+                          type="number"
+                          placeholder="Max"
+                          value={priceMax}
+                          onChange={(e) => setPriceMax(e.target.value)}
+                        />
+                      </div>
+                      <Button size="sm" variant="outline-primary" className="filter-apply-btn" onClick={applyCustomPrice}>
+                        Apply
+                      </Button>
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="2">
+                  <Accordion.Header>⭐ Customer Ratings</Accordion.Header>
+                  <Accordion.Body>
+                    <ListGroup className="filter-list">
+                      <ListGroup.Item 
+                        action 
+                        className={`filter-item ${ratingFilter === "" ? "active" : ""}`}
+                        onClick={() => setRatingFilter("")}
+                      >
+                        All Ratings
+                      </ListGroup.Item>
+                      {[4.5, 4.0, 3.5, 3.0].map((rating) => (
+                        <ListGroup.Item
+                          key={rating}
+                          action
+                          className={`filter-item ${ratingFilter === rating.toString() ? "active" : ""}`}
+                          onClick={() => setRatingFilter(rating.toString())}
+                        >
+                          <span className="rating-chip">
+                            {rating} <i className="bi bi-star-fill"></i> & Up
+                          </span>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
             </Card.Body>
           </Card>
         </Col>
@@ -203,6 +261,27 @@ const ProductListPage = () => {
                 <p className="product-count text-muted">
                   <i className="bi bi-box2"></i> {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"} found
                 </p>
+                {appliedChips.length > 0 && (
+                  <div className="applied-chips applied-chips-inline">
+                    {appliedChips.map((chip, idx) => (
+                      <Badge bg="light" text="dark" key={idx} className="filter-chip">
+                        {chip.label}
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="chip-close"
+                          onClick={() => {
+                            if (chip.type === "category") setSelectedCategory("");
+                            if (chip.type === "price") setPriceFilter("");
+                            if (chip.type === "rating") setRatingFilter("");
+                          }}
+                        >
+                          <i className="bi bi-x-circle"></i>
+                        </Button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </Col>
               <Col md={5}>
                 <Form.Group>

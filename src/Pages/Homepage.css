@@ -1,0 +1,318 @@
+.homepage {
+  background: linear-gradient(180deg, #f8f9fb 0%, #eef2f7 100%);
+}
+
+.highlight-bar {
+  margin-top: -40px;
+  position: relative;
+  z-index: 2;
+}
+
+.highlight-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  height: 100%;
+}
+
+.highlight-card i {
+  font-size: 1.6rem;
+  color: #ffc107;
+  margin-bottom: 6px;
+}
+
+.highlight-card h6 {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.highlight-card p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-tag {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #ffc107;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.section-title {
+  font-weight: 800;
+  color: #1f2a44;
+  margin: 0;
+}
+
+.section-sub {
+  color: #6c757d;
+  margin: 0;
+}
+
+.spotlight-card {
+  border: none;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.spotlight-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.spotlight-image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-image {
+  height: 220px;
+  object-fit: cover;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.spotlight-card:hover .spotlight-image {
+  transform: scale(1.05);
+}
+
+.spotlight-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  border-radius: 30px;
+  padding: 6px 12px;
+  font-weight: 700;
+}
+
+.spotlight-price {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #1f2a44;
+}
+
+.trust-section {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+.trust-card {
+  text-align: center;
+  padding: 14px;
+}
+
+.trust-card i {
+  font-size: 1.7rem;
+  color: #0d6efd;
+  margin-bottom: 6px;
+}
+
+.trust-card h6 {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.trust-card p {
+  color: #6c757d;
+  margin: 0;
+}
+
+.promo-banner {
+  background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.promo-countdown {
+  display: inline-block;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.testimonial-card {
+  border: none;
+  border-radius: 14px;
+  background: #fff;
+  padding: 20px;
+}
+
+.testimonial-text {
+  color: #4a5568;
+  font-size: 0.98rem;
+  margin: 10px 0 14px;
+}
+
+@media (max-width: 991px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .trust-section {
+    padding: 20px;
+  }
+  
+  .promo-banner {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .highlight-bar {
+    margin-top: -30px;
+  }
+  
+  .highlight-card {
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .highlight-card i {
+    font-size: 1.3rem;
+  }
+  
+  .highlight-card h6 {
+    font-size: 0.9rem;
+  }
+  
+  .highlight-card p {
+    font-size: 0.85rem;
+  }
+  
+  .section-tag {
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+  
+  .section-title {
+    font-size: 1.6rem;
+  }
+  
+  .section-sub {
+    font-size: 0.9rem;
+  }
+  
+  .spotlight-image {
+    height: 180px;
+  }
+  
+  .spotlight-price {
+    font-size: 1.1rem;
+  }
+  
+  .trust-card {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .trust-card i {
+    font-size: 1.4rem;
+  }
+  
+  .trust-card h6 {
+    font-size: 0.95rem;
+  }
+  
+  .trust-card p {
+    font-size: 0.85rem;
+  }
+  
+  .promo-banner h2 {
+    font-size: 1.5rem;
+  }
+  
+  .promo-countdown {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .testimonial-card {
+    padding: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .testimonial-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .highlight-bar {
+    margin-top: -20px;
+  }
+  
+  .highlight-card {
+    padding: 12px;
+  }
+  
+  .highlight-card i {
+    font-size: 1.2rem;
+  }
+  
+  .highlight-card h6 {
+    font-size: 0.85rem;
+  }
+  
+  .highlight-card p {
+    font-size: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+  
+  .section-sub {
+    font-size: 0.85rem;
+  }
+
+  .spotlight-image {
+    height: 160px;
+  }
+  
+  .spotlight-badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+  
+  .trust-section {
+    padding: 15px;
+  }
+  
+  .trust-card h6 {
+    font-size: 0.9rem;
+  }
+  
+  .promo-banner {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .promo-banner h2 {
+    font-size: 1.3rem;
+  }
+  
+  .promo-banner p {
+    font-size: 0.9rem;
+  }
+}

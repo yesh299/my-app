@@ -1,0 +1,123 @@
+/* Footer Styles */
+footer {
+  margin-top: auto;
+}
+
+footer h4, footer h5, footer h6 {
+  color: #ffc107;
+}
+
+footer p, footer a {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+footer a:hover {
+  color: #ffc107;
+  text-decoration: none;
+}
+
+/* Mobile Responsive Footer */
+@media (max-width: 991px) {
+  footer .py-5 {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+  
+  footer .py-4 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  footer h4 {
+    font-size: 1.3rem;
+  }
+  
+  footer h5 {
+    font-size: 1.1rem;
+  }
+  
+  footer h6 {
+    font-size: 1rem;
+  }
+  
+  footer p {
+    font-size: 0.9rem;
+  }
+  
+  footer .py-5 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+  
+  footer .py-4 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+  
+  footer .mb-4 {
+    margin-bottom: 2rem !important;
+  }
+  
+  footer .bi-facebook,
+  footer .bi-twitter,
+  footer .bi-instagram,
+  footer .bi-linkedin {
+    font-size: 1.5rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  footer h4 {
+    font-size: 1.1rem;
+  }
+  
+  footer h5 {
+    font-size: 1rem;
+  }
+  
+  footer h6 {
+    font-size: 0.95rem;
+  }
+  
+  footer p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  
+  footer .py-5 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+  
+  footer .py-4 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  footer .mb-4 {
+    margin-bottom: 1.5rem !important;
+  }
+  
+  footer .input-group .form-control {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem !important;
+  }
+  
+  footer .input-group .btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem !important;
+  }
+  
+  footer .bi-facebook,
+  footer .bi-twitter,
+  footer .bi-instagram,
+  footer .bi-linkedin {
+    font-size: 1.3rem !important;
+  }
+  
+  footer .text-center {
+    font-size: 0.8rem;
+  }
+}

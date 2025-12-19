@@ -1,0 +1,89 @@
+/* Header/Navbar Styles */
+.navbar {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem 0;
+}
+
+.navbar-brand {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.navbar-brand i {
+  font-size: 1.5rem;
+}
+
+/* Search form in navbar */
+.navbar .input-group {
+  max-width: 500px;
+}
+
+/* Mobile Responsive Navbar */
+@media (max-width: 991px) {
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+  
+  .navbar-brand i {
+    font-size: 1.3rem;
+  }
+  
+  .navbar-collapse {
+    padding-top: 1rem;
+  }
+  
+  .navbar .input-group {
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .navbar .nav-link {
+    padding: 0.6rem 0;
+  }
+  
+  .navbar .dropdown-menu {
+    border: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.6rem 0;
+  }
+  
+  .navbar-brand {
+    font-size: 1rem;
+  }
+  
+  .navbar-brand i {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 0.95rem;
+  }
+  
+  .navbar-brand i {
+    font-size: 1.1rem;
+  }
+  
+  .navbar-toggler {
+    padding: 0.4rem 0.6rem;
+    font-size: 1rem;
+  }
+  
+  .input-group .btn,
+  .input-group .form-control,
+  .input-group .dropdown-toggle {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .navbar .badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+}

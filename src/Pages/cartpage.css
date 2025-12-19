@@ -1,0 +1,78 @@
+/* Cart Page Styles */
+.cart-item-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.cart-quantity-select {
+  max-width: 80px;
+}
+
+/* Mobile Responsive Cart */
+@media (max-width: 768px) {
+  .cart-item-image {
+    max-width: 80px;
+  }
+  
+  .cart-quantity-select {
+    max-width: 70px;
+    font-size: 0.9rem;
+  }
+  
+  .list-group-item h5 {
+    font-size: 1rem;
+  }
+  
+  .list-group-item .btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .cart-item-image {
+    max-width: 60px;
+  }
+  
+  h1.mb-4 {
+    font-size: 1.5rem;
+  }
+  
+  .list-group-item {
+    padding: 0.8rem !important;
+  }
+  
+  .list-group-item h5 {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .list-group-item p {
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .cart-quantity-select {
+    max-width: 60px;
+    font-size: 0.85rem;
+  }
+  
+  .list-group-item .btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .list-group-item h3,
+  .list-group-item h4 {
+    font-size: 1.2rem;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+}

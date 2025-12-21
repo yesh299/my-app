@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const mockAuthDB = require('../mockAuthDB');
 
 // Protect routes - check if user is authenticated
 exports.protect = async (req, res, next) => {
@@ -13,14 +14,43 @@ exports.protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Get user from token
-      req.user = await User.findById(decoded.id).select('-password');
+      // Try MongoDB first, fall back to mock database
+      try {
+        req.user = await User.findById(decoded.id).select('-password');
 
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: 'User not found',
-        });
+        if (!req.user) {
+          // Not found in MongoDB, try mock database
+          const mockUser = mockAuthDB.findUserById(decoded.id);
+          if (mockUser) {
+            req.user = {
+              _id: mockUser._id,
+              name: mockUser.name,
+              email: mockUser.email,
+              isAdmin: mockUser.isAdmin,
+            };
+          } else {
+            return res.status(401).json({
+              success: false,
+              message: 'User not found',
+            });
+          }
+        }
+      } catch (mongoError) {
+        // MongoDB failed, use mock database
+        const mockUser = mockAuthDB.findUserById(decoded.id);
+        if (mockUser) {
+          req.user = {
+            _id: mockUser._id,
+            name: mockUser.name,
+            email: mockUser.email,
+            isAdmin: mockUser.isAdmin,
+          };
+        } else {
+          return res.status(401).json({
+            success: false,
+            message: 'User not found',
+          });
+        }
       }
 
       next();

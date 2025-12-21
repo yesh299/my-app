@@ -187,25 +187,65 @@ exports.loginUser = async (req, res) => {
 // @access  Private
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    // Try MongoDB first, fall back to mock database
+    try {
+      const user = await User.findById(req.user._id);
 
-    if (user) {
-      res.json({
-        success: true,
-        data: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          isAdmin: user.isAdmin,
-          phone: user.phone,
-          address: user.address,
-        },
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
+      if (user) {
+        res.json({
+          success: true,
+          data: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            phone: user.phone,
+            address: user.address,
+          },
+        });
+      } else {
+        // Try mock database
+        const mockUser = mockAuthDB.findUserById(req.user._id);
+        if (mockUser) {
+          res.json({
+            success: true,
+            data: {
+              _id: mockUser._id,
+              name: mockUser.name,
+              email: mockUser.email,
+              isAdmin: mockUser.isAdmin,
+              phone: mockUser.phone || '',
+              address: mockUser.address || '',
+            },
+          });
+        } else {
+          res.status(404).json({
+            success: false,
+            message: 'User not found',
+          });
+        }
+      }
+    } catch (mongoError) {
+      // MongoDB failed, use mock database
+      const mockUser = mockAuthDB.findUserById(req.user._id);
+      if (mockUser) {
+        res.json({
+          success: true,
+          data: {
+            _id: mockUser._id,
+            name: mockUser.name,
+            email: mockUser.email,
+            isAdmin: mockUser.isAdmin,
+            phone: mockUser.phone || '',
+            address: mockUser.address || '',
+          },
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
     }
   } catch (error) {
     res.status(500).json({
@@ -220,37 +260,107 @@ exports.getUserProfile = async (req, res) => {
 // @access  Private
 exports.updateUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    // Try MongoDB first, fall back to mock database
+    try {
+      const user = await User.findById(req.user._id);
 
-    if (user) {
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
-      user.phone = req.body.phone || user.phone;
-      user.address = req.body.address || user.address;
+      if (user) {
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        user.phone = req.body.phone || user.phone;
+        user.address = req.body.address || user.address;
 
-      if (req.body.password) {
-        user.password = req.body.password;
+        if (req.body.password) {
+          user.password = req.body.password;
+        }
+
+        const updatedUser = await user.save();
+
+        res.json({
+          success: true,
+          data: {
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin,
+            phone: updatedUser.phone,
+            address: updatedUser.address,
+            token: generateToken(updatedUser._id),
+          },
+        });
+      } else {
+        // Try mock database
+        const mockUser = mockAuthDB.findUserById(req.user._id);
+        if (mockUser) {
+          const updateData = {
+            name: req.body.name || mockUser.name,
+            email: req.body.email || mockUser.email,
+            phone: req.body.phone || mockUser.phone,
+            address: req.body.address || mockUser.address,
+          };
+
+          if (req.body.password) {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            updateData.password = hashedPassword;
+          }
+
+          const updatedUser = mockAuthDB.updateUser(req.user._id, updateData);
+
+          res.json({
+            success: true,
+            data: {
+              _id: updatedUser._id,
+              name: updatedUser.name,
+              email: updatedUser.email,
+              isAdmin: updatedUser.isAdmin,
+              phone: updatedUser.phone || '',
+              address: updatedUser.address || '',
+              token: generateToken(updatedUser._id),
+            },
+          });
+        } else {
+          res.status(404).json({
+            success: false,
+            message: 'User not found',
+          });
+        }
       }
+    } catch (mongoError) {
+      // MongoDB failed, use mock database
+      const mockUser = mockAuthDB.findUserById(req.user._id);
+      if (mockUser) {
+        const updateData = {
+          name: req.body.name || mockUser.name,
+          email: req.body.email || mockUser.email,
+          phone: req.body.phone || mockUser.phone,
+          address: req.body.address || mockUser.address,
+        };
 
-      const updatedUser = await user.save();
+        if (req.body.password) {
+          const hashedPassword = await bcrypt.hash(req.body.password, 10);
+          updateData.password = hashedPassword;
+        }
 
-      res.json({
-        success: true,
-        data: {
-          _id: updatedUser._id,
-          name: updatedUser.name,
-          email: updatedUser.email,
-          isAdmin: updatedUser.isAdmin,
-          phone: updatedUser.phone,
-          address: updatedUser.address,
-          token: generateToken(updatedUser._id),
-        },
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
+        const updatedUser = mockAuthDB.updateUser(req.user._id, updateData);
+
+        res.json({
+          success: true,
+          data: {
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin,
+            phone: updatedUser.phone || '',
+            address: updatedUser.address || '',
+            token: generateToken(updatedUser._id),
+          },
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
     }
   } catch (error) {
     res.status(500).json({

@@ -1,29 +1,65 @@
-import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import { getUserProfile, updateUserProfile } from "../../api/api";
 
 const UserProfilePage = () => {
   const [validated, setValidated] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
   const [userInfo, setUserInfo] = useState({
-    name: "John",
-    lastName: "Doe",
-    email: "user@user.com",
-    phone: "+1 234 567 8900",
-    address: "123 Main St",
-    city: "New York",
-    state: "NY",
-    zip: "10001",
-    country: "USA"
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
   });
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    if (storedUser.email) {
-      setUserInfo(prev => ({ ...prev, email: storedUser.email }));
-    }
+    // Fetch user profile from API
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const response = await getUserProfile();
+        if (response.success && response.data) {
+          // Parse name into first and last name
+          const nameParts = response.data.name.split(' ');
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.slice(1).join(' ') || '';
+          
+          setUserInfo({
+            name: firstName,
+            lastName: lastName,
+            email: response.data.email,
+            phone: response.data.phone || "",
+            address: response.data.address || "",
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        // Fallback to localStorage
+        const storedUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        if (storedUser.email) {
+          const nameParts = storedUser.name?.split(' ') || ['', ''];
+          setUserInfo({
+            name: nameParts[0] || '',
+            lastName: nameParts.slice(1).join(' ') || '',
+            email: storedUser.email,
+            phone: "",
+            address: "",
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     event.stopPropagation();
     const form = event.currentTarget;
@@ -33,48 +69,89 @@ const UserProfilePage = () => {
       return;
     }
 
-    // Update user info
-    const updatedInfo = {
-      name: form.name.value,
-      lastName: form.lastName.value,
-      email: form.email.value,
-      phone: form.phone.value,
-      address: form.address.value,
-      city: form.city.value,
-      state: form.state.value,
-      zip: form.zip.value,
-      country: form.country.value
-    };
+    setError("");
+    setUpdateSuccess(false);
+    setLoading(true);
 
-    setUserInfo(updatedInfo);
-    setUpdateSuccess(true);
-    setTimeout(() => setUpdateSuccess(false), 3000);
+    try {
+      // Combine first and last name
+      const fullName = `${form.name.value.trim()} ${form.lastName.value.trim()}`.trim();
+      
+      // Update user profile via API
+      const updatedData = {
+        name: fullName,
+        email: form.email.value,
+        phone: form.phone.value,
+        address: form.address.value,
+      };
+
+      const response = await updateUserProfile(updatedData);
+      
+      if (response.success) {
+        // Update local state
+        setUserInfo({
+          name: form.name.value,
+          lastName: form.lastName.value,
+          email: form.email.value,
+          phone: form.phone.value,
+          address: form.address.value,
+        });
+        
+        setUpdateSuccess(true);
+        setTimeout(() => setUpdateSuccess(false), 3000);
+      } else {
+        setError(response.message || "Failed to update profile");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update profile. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handlePasswordUpdate = (e) => {
+  const handlePasswordUpdate = async (e) => {
     e.preventDefault();
+    setPasswordError("");
+    setPasswordSuccess(false);
+    
     const form = e.currentTarget;
-    const current = form.formCurrentPassword.value.trim();
-    const next = form.formNewPassword.value.trim();
-    const confirm = form.formConfirmPassword.value.trim();
+    const currentPassword = form.formCurrentPassword.value.trim();
+    const newPassword = form.formNewPassword.value.trim();
+    const confirmPassword = form.formConfirmPassword.value.trim();
 
-    if (!current || !next || !confirm) {
-      alert("Please fill in all password fields.");
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordError("Please fill in all password fields.");
       return;
     }
-    if (next.length < 6) {
-      alert("New password must be at least 6 characters.");
+    if (newPassword.length < 6) {
+      setPasswordError("New password must be at least 6 characters.");
       return;
     }
-    if (next !== confirm) {
-      alert("New password and confirmation do not match.");
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New password and confirmation do not match.");
       return;
     }
-    // Demo: persist a flag so login can validate later if needed
-    const storedUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    localStorage.setItem("userPasswordUpdated", JSON.stringify({ email: storedUser.email, updatedAt: Date.now() }));
-    alert("Password updated successfully!");
-    form.reset();
+
+    setPasswordLoading(true);
+
+    try {
+      // Update password via API
+      const response = await updateUserProfile({
+        password: newPassword
+      });
+      
+      if (response.success) {
+        setPasswordSuccess(true);
+        form.reset();
+        setTimeout(() => setPasswordSuccess(false), 3000);
+      } else {
+        setPasswordError(response.message || "Failed to update password");
+      }
+    } catch (err) {
+      setPasswordError(err.response?.data?.message || "Failed to update password. Please try again.");
+    } finally {
+      setPasswordLoading(false);
+    }
   };
 
   return (
@@ -82,140 +159,172 @@ const UserProfilePage = () => {
       <Row className="justify-content-md-center">
         <Col md={8}>
           <h1 className="mb-4">My Profile</h1>
-          {updateSuccess && (
-            <Alert variant="success">Profile updated successfully!</Alert>
+          
+          {loading && !userInfo.email ? (
+            <div className="text-center my-5">
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+              <p className="mt-2">Loading profile...</p>
+            </div>
+          ) : (
+            <>
+              {updateSuccess && (
+                <Alert variant="success">Profile updated successfully!</Alert>
+              )}
+              {error && (
+                <Alert variant="danger">{error}</Alert>
+              )}
+              
+              <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3" controlId="formFirstName">
+                      <Form.Label>First Name</Form.Label>
+                      <Form.Control
+                        name="name"
+                        required
+                        type="text"
+                        defaultValue={userInfo.name}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        Please provide your first name
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3" controlId="formLastName">
+                      <Form.Label>Last Name</Form.Label>
+                      <Form.Control
+                        name="lastName"
+                        required
+                        type="text"
+                        defaultValue={userInfo.lastName}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        Please provide your last name
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Form.Group className="mb-3" controlId="formEmail">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    name="email"
+                    required
+                    type="email"
+                    defaultValue={userInfo.email}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please provide a valid email
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formPhone">
+                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Control
+                    name="phone"
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    defaultValue={userInfo.phone}
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formAddress">
+                  <Form.Label>Address</Form.Label>
+                  <Form.Control
+                    name="address"
+                    as="textarea"
+                    rows={3}
+                    placeholder="Enter your full address"
+                    defaultValue={userInfo.address}
+                  />
+                </Form.Group>
+
+                <Button 
+                  variant="primary" 
+                  type="submit" 
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        className="me-2"
+                      />
+                      Updating...
+                    </>
+                  ) : (
+                    "Update Profile"
+                  )}
+                </Button>
+              </Form>
+
+              <hr className="my-4" />
+
+              <h4>Change Password</h4>
+              
+              {passwordSuccess && (
+                <Alert variant="success">Password updated successfully!</Alert>
+              )}
+              {passwordError && (
+                <Alert variant="danger">{passwordError}</Alert>
+              )}
+              
+              <Form onSubmit={handlePasswordUpdate}>
+                <Form.Group className="mb-3" controlId="formCurrentPassword">
+                  <Form.Label>Current Password</Form.Label>
+                  <Form.Control 
+                    type="password" 
+                    placeholder="Enter current password"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formNewPassword">
+                  <Form.Label>New Password</Form.Label>
+                  <Form.Control 
+                    type="password"
+                    placeholder="Enter new password (min 6 characters)"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formConfirmPassword">
+                  <Form.Label>Confirm New Password</Form.Label>
+                  <Form.Control 
+                    type="password"
+                    placeholder="Confirm new password"
+                  />
+                </Form.Group>
+
+                <Button 
+                  variant="warning" 
+                  type="submit"
+                  disabled={passwordLoading}
+                >
+                  {passwordLoading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        className="me-2"
+                      />
+                      Updating Password...
+                    </>
+                  ) : (
+                    "Update Password"
+                  )}
+                </Button>
+              </Form>
+            </>
           )}
-          <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3" controlId="formFirstName">
-                  <Form.Label>First Name</Form.Label>
-                  <Form.Control
-                    name="name"
-                    required
-                    type="text"
-                    defaultValue={userInfo.name}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    Please provide your first name
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3" controlId="formLastName">
-                  <Form.Label>Last Name</Form.Label>
-                  <Form.Control
-                    name="lastName"
-                    required
-                    type="text"
-                    defaultValue={userInfo.lastName}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    Please provide your last name
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Form.Group className="mb-3" controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                name="email"
-                required
-                type="email"
-                defaultValue={userInfo.email}
-              />
-              <Form.Control.Feedback type="invalid">
-                Please provide a valid email
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formPhone">
-              <Form.Label>Phone Number</Form.Label>
-              <Form.Control
-                name="phone"
-                type="tel"
-                defaultValue={userInfo.phone}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formAddress">
-              <Form.Label>Address</Form.Label>
-              <Form.Control
-                name="address"
-                type="text"
-                defaultValue={userInfo.address}
-              />
-            </Form.Group>
-
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3" controlId="formCity">
-                  <Form.Label>City</Form.Label>
-                  <Form.Control
-                    name="city"
-                    type="text"
-                    defaultValue={userInfo.city}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={3}>
-                <Form.Group className="mb-3" controlId="formState">
-                  <Form.Label>State</Form.Label>
-                  <Form.Control
-                    name="state"
-                    type="text"
-                    defaultValue={userInfo.state}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={3}>
-                <Form.Group className="mb-3" controlId="formZip">
-                  <Form.Label>ZIP Code</Form.Label>
-                  <Form.Control
-                    name="zip"
-                    type="text"
-                    defaultValue={userInfo.zip}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Form.Group className="mb-3" controlId="formCountry">
-              <Form.Label>Country</Form.Label>
-              <Form.Control
-                name="country"
-                type="text"
-                defaultValue={userInfo.country}
-              />
-            </Form.Group>
-
-            <Button variant="primary" type="submit">
-              Update Profile
-            </Button>
-          </Form>
-
-          <hr className="my-4" />
-
-          <h4>Change Password</h4>
-          <Form onSubmit={handlePasswordUpdate}>
-            <Form.Group className="mb-3" controlId="formCurrentPassword">
-              <Form.Label>Current Password</Form.Label>
-              <Form.Control type="password" />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formNewPassword">
-              <Form.Label>New Password</Form.Label>
-              <Form.Control type="password" />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formConfirmPassword">
-              <Form.Label>Confirm New Password</Form.Label>
-              <Form.Control type="password" />
-            </Form.Group>
-
-            <Button variant="warning" type="submit">Update Password</Button>
-          </Form>
         </Col>
       </Row>
     </Container>

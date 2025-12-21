@@ -56,7 +56,12 @@ const createUser = (userData) => {
 const updateUser = (id, updateData) => {
   const userIndex = users.findIndex(u => u._id === id);
   if (userIndex !== -1) {
-    users[userIndex] = { ...users[userIndex], ...updateData };
+    // Merge the update data with existing user, preserving all fields
+    users[userIndex] = { 
+      ...users[userIndex], 
+      ...updateData,
+      updatedAt: new Date()
+    };
     return users[userIndex];
   }
   return null;
